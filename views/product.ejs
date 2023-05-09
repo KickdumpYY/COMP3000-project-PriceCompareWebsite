@@ -1,0 +1,97 @@
+<%- include ("_layouts/header") %>
+  <script src="https://cdn.staticfile.org/Chart.js/3.9.1/chart.js"></script>
+  <div class="row">
+
+    <h1 class="page-header">
+      <%= p.title %>
+    </h1>
+
+    <div class="col-xs-12 col-md-5">
+      <img class="spi" src="/product_images/<%= p.id %>/<%= p.image %>" alt="">
+      <br>
+    </div>
+    <div class="col-xs-12 col-md-7">
+      <p>
+        <%= p.desc %>
+      </p>
+      <p>
+        <%= p.priceold %>
+      </p>
+      <p>$<%= parseFloat(p.price).toFixed(2) %>
+      </p>
+
+      <% if (loggedIn) { %>
+        <p><a href="/cart/add/<%= p.slug %>">Add to cart</a></p>
+        <% } else {%>
+          <p>You must be logged in to purchase items.</p>
+          <% } %>
+
+
+    </div>
+    <div class="col-xs-12">
+      <ul class="gallery">
+        <% galleryImages.forEach(function(image){ %>
+          <% if (image !="thumbs" ) { %>
+            <li>
+              <a data-fancybox="gallery" href="/product_images/<%= p.id %>/gallery/<%= image %>">
+                <img src="/product_images/<%= p.id %>/gallery/thumbs/<%= image %>" alt="">
+              </a>
+            </li>
+            <% } %>
+              <% }); %>
+      </ul>
+    </div>
+    <div>
+      <canvas id="myChart" width="400" height="200"></canvas>
+      <script>
+        const ctx = document.getElementById('myChart');
+        const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];  // 设置 X 轴上对应的标签
+        const data = {
+          labels: labels,
+         
+          datasets: [{
+            var:priceold="<%=p.priceold %>",
+            label: 'Price compare',
+            data:priceold,
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)', // 设置线的颜色
+            backgroundColor: ['rgba(179, 0, 33, 0.5)'],// 设置点的填充色
+            pointStyle: 'circle',     //设置点类型为圆点
+            pointRadius: 6,    //设置圆点半径
+            pointHoverRadius: 10, //设置鼠标移动上去后圆点半径
+            tension: 0.1
+          }]
+        };
+        const config = {
+          type: 'line', // 设置图表类型
+          data: data,
+          options: {
+            responsive: true,  // 设置图表为响应式
+
+            interaction: {  // 设置每个点的交互
+              intersect: false,
+            },
+            scales: {  // 设置 X 轴与 Y 轴
+              x: {
+                display: true,
+                title: {
+                  display: true,
+                  text: 'Date'
+                }
+              },
+              y: {
+                display: true,
+                title: {
+                  display: true,
+                  text: 'Price'
+                }
+              }
+            }
+          }
+        };
+        const myChart = new Chart(ctx, config);
+      </script>
+    </div>
+  </div>
+
+  <%- include ("_layouts/footer") %>
